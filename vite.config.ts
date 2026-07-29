@@ -5,8 +5,8 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
-    // ESTA ES LA RUTA ABSOLUTA QUE ARREGLA EL PROBLEMA
-    base: 'https://entrenaconsultingsst-web.github.io/Plan-de-Mejoramiento-SG-SST-HTML5/',
+    // CORRECCIÓN: Solo el nombre de la carpeta del repositorio, con barra al inicio y al final
+    base: '/Plan-de-Mejoramiento-SG-SST-HTML5/',
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {

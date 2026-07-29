@@ -1,20 +1,18 @@
 import React, { useState } from 'react';
 import { EmpresaInfo, PlanMejoramientoSST } from '../types';
-import { HALLAZGOS_PREDETERMINADOS, ESTANDARES_RES_0312 } from '../data/standardsData';
+import { HALLAZGOS_PREDETERMINADOS } from '../data/standardsData';
 import { parseEvaluationFile } from '../utils/fileParser';
 import {
   Sparkles,
   Building2,
-  CheckSquare,
   AlertCircle,
-  HelpCircle,
-  FileSearch,
-  ArrowRight,
   Loader2,
   Upload,
   FileSpreadsheet,
   RefreshCw,
   CheckCircle2,
+  ArrowRight,
+  FileJson2,
 } from 'lucide-react';
 
 interface CompanyProfileFormProps {
@@ -34,7 +32,6 @@ export const CompanyProfileForm: React.FC<CompanyProfileFormProps> = ({
 }) => {
   const [empresa, setEmpresa] = useState<EmpresaInfo>(initialInfo);
 
-  // Keep state in sync with initialInfo if initialInfo changes externally
   React.useEffect(() => {
     setEmpresa(initialInfo);
   }, [initialInfo]);
@@ -48,6 +45,7 @@ export const CompanyProfileForm: React.FC<CompanyProfileFormProps> = ({
       return next;
     });
   };
+
   const [selectedHallazgos, setSelectedHallazgos] = useState<string[]>([
     '1.1.1',
     '1.2.1',
@@ -67,7 +65,29 @@ export const CompanyProfileForm: React.FC<CompanyProfileFormProps> = ({
   const [isExtractingHallazgos, setIsExtractingHallazgos] = useState<boolean>(false);
   const [extractionSuccessMsg, setExtractionSuccessMsg] = useState<string | null>(null);
 
-  // Function to automatically extract and update the findings/non-conformities section using IA
+  // Función para cargar y probar el JSON desde public/evaluacionSGSST.json
+  const handleCargarJSONEstatico = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.BASE_URL}evaluacionSGSST.json`);
+
+      if (!response.ok) {
+        throw new Error(`No se pudo encontrar el archivo JSON (Status: ${response.status})`);
+      }
+
+      const data = await response.json();
+      console.log('✅ Datos de autoevaluación cargados desde public/:', data);
+
+      if (data.evaluacion && Array.isArray(data.evaluacion)) {
+        alert(`¡JSON de prueba cargado con éxito!\nConsecutivo: ${data.consecutivo || 'N/A'}\nPuntaje Total: ${data.puntajeTotal}`);
+      } else {
+        alert('El JSON se cargó correctamente, pero no contiene la estructura "evaluacion" esperada.');
+      }
+    } catch (error) {
+      console.error('❌ Error al procesar el JSON estático:', error);
+      alert('Error al cargar evaluacionSGSST.json. Verifica que el archivo esté guardado dentro de la carpeta "public".');
+    }
+  };
+
   const handleExtractHallazgos = async (customTextToAnalyze?: string) => {
     setIsExtractingHallazgos(true);
     setExtractionSuccessMsg(null);
@@ -105,7 +125,6 @@ export const CompanyProfileForm: React.FC<CompanyProfileFormProps> = ({
         });
       }
 
-      // If a percentage was extracted directly from the autoevaluation document
       if (
         typeof data.porcentajeCalculado === 'number' &&
         data.porcentajeCalculado >= 0 &&
@@ -131,7 +150,6 @@ export const CompanyProfileForm: React.FC<CompanyProfileFormProps> = ({
     }
   };
 
-  // Auto update standards count when size changes
   const handleTamanoChange = (tamano: 'micro' | 'pequena' | 'mediana_grande') => {
     let numEstandares: 7 | 21 | 60 = 21;
     if (tamano === 'micro') numEstandares = 7;
@@ -155,7 +173,7 @@ export const CompanyProfileForm: React.FC<CompanyProfileFormProps> = ({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setFileStatus(`Procesando archivo "${file.name}" (Excel / CSV / Texto - 71 ítems)...`);
+    setFileStatus(`Procesando archivo "${file.name}" (Excel / CSV / Texto)...`);
     setErrorMessage(null);
 
     try {
@@ -192,7 +210,6 @@ export const CompanyProfileForm: React.FC<CompanyProfileFormProps> = ({
     setIsLoading(true);
 
     try {
-      // Build findings list
       const hallazgosSeleccionadosInfo = HALLAZGOS_PREDETERMINADOS.filter((h) =>
         selectedHallazgos.includes(h.numeral)
       ).map((h) => `[Estándar ${h.numeral} - ${h.estandar}]: ${h.hallazgo}`);
@@ -314,7 +331,6 @@ export const CompanyProfileForm: React.FC<CompanyProfileFormProps> = ({
             onClick={() => handleExtractHallazgos()}
             disabled={isExtractingHallazgos}
             className="w-full sm:w-auto px-4 py-3 bg-emerald-700 hover:bg-emerald-800 disabled:opacity-50 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-xs transition flex items-center justify-center space-x-2 cursor-pointer flex-shrink-0"
-            title="Analiza el texto o documento cargado para extraer y actualizar automáticamente las no conformidades"
           >
             {isExtractingHallazgos ? (
               <>
@@ -572,6 +588,18 @@ export const CompanyProfileForm: React.FC<CompanyProfileFormProps> = ({
                     <span>Actualizar sección de hallazgos</span>
                   </>
                 )}
+              </button>
+            </div>
+
+            {/* BOTÓN DE PRUEBA PARA CARGAR EL JSON ESTÁTICO */}
+            <div className="flex items-center gap-2 mt-2 pt-2 border-t border-slate-200">
+              <button
+                type="button"
+                onClick={handleCargarJSONEstatico}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider rounded-lg transition flex items-center space-x-2 cursor-pointer"
+              >
+                <FileJson2 className="w-4 h-4 text-white" />
+                <span>Cargar JSON de Prueba</span>
               </button>
             </div>
 

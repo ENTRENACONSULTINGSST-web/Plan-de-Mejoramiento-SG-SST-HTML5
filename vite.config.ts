@@ -5,7 +5,8 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
-    base: '/Plan-de-Mejoramiento-SG-SST-HTML5/', // <--- ESTA ES LA LÍNEA QUE ARREGLA TODO
+    // ESTA ES LA RUTA ABSOLUTA QUE ARREGLA EL PROBLEMA
+    base: 'https://entrenaconsultingsst-web.github.io/Plan-de-Mejoramiento-SG-SST-HTML5/',
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {

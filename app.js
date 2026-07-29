@@ -124,25 +124,5 @@ function eliminarAccion(id) {
     }
 }
 
-// Inicializar la aplicación
-document.addEventListener('DOMContentLoaded', () => {
-    // Crear estructura HTML dinámicamente
-    const root = document.getElementById('root');
-    root.innerHTML = `
-        <h1>📋 Plan de Mejoramiento SG-SST</h1>
-        
-        <div class="form-container">
-            <h2>Nueva Acción de Mejora</h2>
-            <div class="form-group">
-                <input type="text" id="accion-input" placeholder="Descripción de la acción" />
-                <input type="text" id="responsable-input" placeholder="Responsable" />
-                <input type="date" id="fecha-input" />
-                <button onclick="agregarAccion()" class="btn-agregar">Agregar</button>
-            </div>
-        </div>
-
-        <div class="tabla-container" id="tabla-container"></div>
-    `;
-
-    cargarDatos();
-});
+// Inicializar la aplicación cuando la página esté cargada
+document.addEventListener('DOMContentLoaded', cargarDatos);

@@ -7,7 +7,26 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="app">
+      <h1>📋 Plan de Mejoramiento SG-SST</h1>
+      
+      <!-- Formulario para agregar acciones -->
+      <div class="form-container">
+        <h2>Nueva Acción de Mejora</h2>
+        <div class="form-group">
+          <input type="text" id="accion-input" placeholder="Descripción de la acción" />
+          <input type="text" id="responsable-input" placeholder="Responsable" />
+          <input type="date" id="fecha-input" />
+          <button onclick="agregarAccion()" class="btn-agregar">Agregar</button>
+        </div>
+      </div>
+
+      <!-- Contenedor de la tabla -->
+      <div class="tabla-container" id="tabla-container">
+        <!-- Aquí se renderizará la tabla dinámicamente -->
+      </div>
+    </div>
+
     <script src="app.js"></script>
   </body>
 </html>
